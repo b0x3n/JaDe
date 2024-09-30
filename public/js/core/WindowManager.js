@@ -69,7 +69,7 @@
         let __canResize = '';
 
         if (windowConfig['options']['canResize'])
-            __canResize = `resize: both; overflow: auto;`;
+            __canResize = `resize: both;`;
 
         let __windowHtml = `
             <${windowConfig['elementType']}
@@ -139,6 +139,8 @@
             'id': this.processes,
             'state': 'default'
         };
+
+        windowConfig['onload'](this.windows[`window_${this.processes}`]);
 
         this.processes++;
 

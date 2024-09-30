@@ -45,8 +45,8 @@
             const _dirList = fs.readdirSync(filePath).map(fileName => {
                 return JSON.stringify({
                     'fileType': 'directory',
-                    'filePath': filePath,
-                    [fileName]: `${filePath}${path.sep}${fileName}` 
+                    'filePath': fileName,
+                    'fileData': '' 
                 });
             });
 

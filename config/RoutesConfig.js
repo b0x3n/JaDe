@@ -71,7 +71,7 @@
 //
 //      JaDe/JaDe.js
 //
-            '/filesystem/': (req, res) => {
+            '/filesystem': (req, res) => {
                 return res.send(JSON.stringify(JaDeFS().list('/')));
             }
 
