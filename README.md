@@ -14,13 +14,13 @@ applications, etc.
 You need a few things to get this running:
 
 1. Node JS
-   - A MongoDB server
+2. A MongoDB server
 
 ## Clone the repo and install
 
 First - clone the repo:
 
-    `git clone https://github.com/b0x3n/JaDe`
+    git clone https://github.com/b0x3n/JaDe
 
 Now `cd` to the JaDe directory and run `npm install`.
 
@@ -33,12 +33,12 @@ __mongoose__.
 Once the dependencies have installed you can run the
 server:
 
-    `node server.js`
+    node server.js
 
 Now you can connect at __127.0.0.1:3412__ - if you need
 to configure the database connection see:
 
-    `JaDe/config/DatabaseConfig.js`
+    JaDe/config/DatabaseConfig.js
 
 
 - __Michael__
