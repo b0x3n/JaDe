@@ -22,6 +22,14 @@
 
 
 ///////////////////////////////////////////////////////////
+//  We can manage a file system within the JaDe directory
+//  where we can create, read, update and delete files
+//  and directories.
+//
+    ServerConfig.fileSystem = `${__dirname}${path.sep}filesystem`;
+
+
+///////////////////////////////////////////////////////////
 //  Initialise and run the server.
 //
     const   __server = Server(ServerConfig);

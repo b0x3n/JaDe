@@ -16,6 +16,7 @@
         padding: 3px;
         background-color: #AAA;
         z-index: 3;
+        user-select: none;
     }
 
         .start, .tasks, .clock {
@@ -41,9 +42,39 @@
         }
 
         .clock {
-            min-width: 120px;
+            width: auto;
             display: inherit;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
+            font-family: "Nova Square", sans-serif;
         }
+
+            .clock_digits {
+                position: relative;
+                float: left;
+                width: auto;
+                min-width: 32px;
+                height: auto;
+                font-size: 20px;
+            }
+
+                .clock_digits:nth-child(odd) {
+                    text-align: center;
+                }
+
+                .clock_digits:first-child {
+                    text-align: center;
+                }
+
+                .clock_digits:last-child {
+                    text-align: center;
+                }
+
+            .clock_separator {
+                position: relative;
+                float: left;
+                width: 8px;
+                height: auto;
+                font-size: 20px;
+            }

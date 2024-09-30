@@ -38,12 +38,16 @@ __mongoose__.
 Once the dependencies have installed you can run the
 server:
 
-    node server.js
+    node JaDe.js
 
-Now you can connect at __127.0.0.1:3412__ - if you need
-to configure the database connection see:
+Now you can connect with your browser to `127.0.0.1:3412`
+- if you need to configure the database connection see:
 
     JaDe/config/DatabaseConfig.js
 
+If you want to set the server port, see:
 
-- __Michael__
+    JaDe/config/ServerConfig.js
+
+
+__Michael__

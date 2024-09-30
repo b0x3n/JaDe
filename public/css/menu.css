@@ -17,6 +17,7 @@
         padding: 3px;
         display: none;
         z-index: 2;
+        user-select: none;
     }
 
         .menu_option {

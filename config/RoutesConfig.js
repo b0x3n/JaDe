@@ -7,9 +7,9 @@
 //  handlers for those routes.
 //
 
+    import { DefaultTheme } from './../defaults/DefaultTheme.js';
+
     import { DB } from './../src/DB.js';
-
-
     const __db = DB();
 
 
@@ -18,6 +18,10 @@
         'get':
         {
 
+///////////////////////////////////////////////////////////
+//  Theme-related routes                                 //
+///////////////////////////////////////////////////////////
+//
 //  Get the index.html.
 //
             '/': (req, res) => {
@@ -30,7 +34,7 @@
                 let __theme = __db.model['Theme'].findOne({ 'name': 'Default' })
                     .then(theme => {
                         if (theme === null)
-                            theme = __createDefaultTheme();
+                            theme = DefaultTheme();
 
                         return res.send(JSON.stringify(theme));
                     }).catch(err => {
@@ -51,37 +55,23 @@
                     });
             },
 
+
+///////////////////////////////////////////////////////////
+//  fileSystem related routes                            //
+///////////////////////////////////////////////////////////
+//
+//  /filesystem/ returns an object describing the contents
+//  of the root filesystem directory - this is set in the
+//  JaDe.js server file:
+//
+//      JaDe/JaDe.js
+//
+            '/filesystem/': (req, res) => {
+
+            }
+
         }
 
     };
 
-
-///////////////////////////////////////////////////////////
-//  __createDefaultTheme()                               //
-///////////////////////////////////////////////////////////
-//
-    function __createDefaultTheme() {
-        
-        const   _defaultTheme = {
-            'name': 'Default',
-            'taskbar': {
-                'start': {
-                    'background-color': 'red',
-                    'color': 'white'
-                },
-                'background-color': 'rgba(0, 0, 127, 0.5)'
-            },
-            'start_menu': {
-                'background-color': 'rgba(0, 0, 0, 1)'
-            },
-            'desktop': {
-                'background-color': '#0F30E0'
-            }
-        };
-
-        const __theme = new __db.model['Theme'](_defaultTheme);
-        __theme.save();
-
-        return _defaultTheme;
-
-    };
+    
