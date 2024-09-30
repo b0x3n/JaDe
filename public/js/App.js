@@ -36,6 +36,13 @@
                 __theme = Theme();
                 __clock = Clock();
                 __menu = Menu();
+
+                $('.desktop_icon').draggable();
+
+                $(`.desktop_icon`).on('dblclick', function() {
+                    let __id = $(this).attr('id').replace('icon_', '');
+                    $(`#menu_option_${__id}`).trigger('click');
+                });
             });
   
         };

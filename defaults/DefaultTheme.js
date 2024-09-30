@@ -16,7 +16,7 @@
                     'background-color': 'none',
                     'color': '#1AFA6A'
                 },
-                'background-color': 'rgba(0, 0, 0, 0.25)'
+                'background-color': 'rgba(0, 0, 0, 0.5)'
             },
             'start_menu': {
                 'background-color': 'rgba(0, 0, 0, 0.05)'

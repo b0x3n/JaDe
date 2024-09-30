@@ -121,6 +121,12 @@
             __buildMenuLinks();
             __initialiseMouseEvents();
 
+            $('body:not(._start)').on('click', () => {
+                if (__menuState !== MENU_STATE_ENABLED)
+                    return;
+                __hideMenu();
+            })
+
         };
 
 
