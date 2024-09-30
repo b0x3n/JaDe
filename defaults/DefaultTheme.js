@@ -3,26 +3,30 @@
 ///////////////////////////////////////////////////////////
 //
 
-    export const DefaultTheme = () => {
+    export const DefaultTheme = db => {
         
         const   _defaultTheme = {
             'name': 'Default',
             'taskbar': {
-                'start': {
-                    'background-color': 'red',
+                'start_menu': {
+                    'background-color': 'rgba(0, 0, 0, 0.25)',
                     'color': 'white'
                 },
-                'background-color': 'rgba(0, 0, 127, 0.5)'
+                'clock': {
+                    'background-color': 'none',
+                    'color': '#1AFA6A'
+                },
+                'background-color': 'rgba(0, 0, 0, 0.25)'
             },
             'start_menu': {
-                'background-color': 'rgba(0, 0, 0, 1)'
+                'background-color': 'rgba(0, 0, 0, 0.05)'
             },
             'desktop': {
-                'background-color': '#0F30E0'
-            }
+                'background-image': 'url(/images/wallpapers/wallpaper1.jpeg)'
+            }    
         };
 
-        const __theme = new __db.model['Theme'](_defaultTheme);
+        const __theme = new db.model['Theme'](_defaultTheme);
         __theme.save();
 
         return _defaultTheme;

@@ -24,7 +24,7 @@
             float: left;
             width: auto;
             height: 100%;
-            background-color: #FFF;
+            background-color: none;
         }
 
         .start {
@@ -33,6 +33,8 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            color: #FFF;
+            background-color: #000;
             cursor: pointer;
         }
 
@@ -56,6 +58,7 @@
             align-items: center;
             justify-content: space-between;
             font-family: "Nova Square", sans-serif;
+            background-color: #000;
         }
 
             .clock_digits {

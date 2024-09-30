@@ -10,14 +10,16 @@
         width: auto;
         height: auto;
         bottom: 40px;
-        background-color: #555;
+        background-color: rgba(0, 0, 0, 0.1);
         min-width: 240px;
         max-width: 300px;
         max-height: calc(100vh - 80px);
-        padding: 3px;
+        padding: 6px;
         display: none;
         z-index: 2;
         user-select: none;
+        border-radius: 8px 8px 0px 0px;
+        overflow: hidden;
     }
 
         .menu_option {
@@ -30,6 +32,7 @@
             width: auto;
             height: 36px;
             border: solid 1px #000;
-            background-color: #DDD;
+            color: #FFF;
+            background-color: rgba(0, 0, 0, 2.5);
             cursor: pointer;
         }

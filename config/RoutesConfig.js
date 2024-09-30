@@ -12,6 +12,7 @@
     import { DefaultTheme } from './../defaults/DefaultTheme.js';
 
     import { DB } from './../src/DB.js';
+    
     const __db = DB();
 
 
@@ -32,15 +33,17 @@
 
 //  Get the default theme.
 //
-            '/default-theme': (req, res) => {
+            '/default-theme': function(req, res) {
                 let __theme = __db.model['Theme'].findOne({ 'name': 'Default' })
                     .then(theme => {
-                        if (theme === null)
-                            theme = DefaultTheme();
+                        if (theme === null) {
+                            console.log(`Creating theme Default`);
+                            theme = DefaultTheme(__db);
+                        }
 
                         return res.send(JSON.stringify(theme));
                     }).catch(err => {
-                        console.log(`Error: ${err}`);
+                        console.log(`<<Error: ${err}`);
                     });
             },
 

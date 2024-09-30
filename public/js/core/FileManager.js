@@ -16,13 +16,13 @@
 //
         window.__windowManager.newWindow({
             'target': 'desktop',
+            'elementType': 'div',
+            'elementClass': 'window',
             'module': {
                 'name': 'FileManager',
                 'reference': FileManager
             },
             'options': {
-                'elementType': 'div',
-                'elementClass': 'window',
                 'showTitlebar': true,
                 'titleText': 'File Manager',
                 'canMaximise': true,

@@ -74,7 +74,7 @@
 //  compile an object with all of the style properties
 //  for this element them apply them all together at
 //  the end.
-//
+//`
             const __style = {};
             
             for (let __key = 0; __key < __keys.length; __key++) {

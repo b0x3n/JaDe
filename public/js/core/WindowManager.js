@@ -108,11 +108,19 @@
             .replace('%minimise%', __minimiseIcon)
             .replace('%close%', __closeIcon);
 
-        $(`#${windowConfig['target']}`).html(__windowHtml);
+        $(`#${windowConfig['target']}`).append(__windowHtml);
 
-        $(`#window_${this.processes}`).draggable();
+        $(`#window_${this.processes}`).draggable({
+            'handle': `#window_${this.processes}_titlebar`
+        });
 
-        this.windows.push = {
+        $(`#window_${this.processes}_close`).on('click', function() {
+            const __id = $(this).attr('id').replace('window_', '').replace('_close', '');
+            $(`#window_${__id}`).remove();
+            delete this.windows[`window_${this.processes}`];
+        });
+
+        this.windows[`window_${this.processes}`] = {
             'name': windowConfig['module']['name'],
             'reference': windowConfig['module']['reference'],
             'id': this.processes,
