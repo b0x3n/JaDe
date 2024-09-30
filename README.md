@@ -14,6 +14,17 @@ index.html page - all other requests are via the API which
 receives & returns JSON.
 
 
+## Updates 
+
+Added a __window manager__ and started work on a __file manager__
+that will allow you to manage a filesystem via the server.
+
+Also added __clickable icons__ to the desktop - you gotta double-click
+them, added one of the file manager.
+
+More still to do!
+
+
 ## Prerequisites
 
 You need a few things to get this running:
