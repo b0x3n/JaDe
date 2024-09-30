@@ -41,6 +41,14 @@
             margin: 0px 3px;
         }
 
+            .task {
+                width: auto;
+                height: 100%;
+                max-width: 220px;
+                border: solid 2px #000;
+            }
+            
+
         .clock {
             width: auto;
             display: inherit;

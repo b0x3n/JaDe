@@ -11,6 +11,9 @@
     import { Menu } from './core/Menu.js';
 
 
+    import { WindowManager } from './core/WindowManager.js';
+
+
     export const App = () => {
 
 //  This will fetch the theme from the server.
@@ -18,6 +21,9 @@
         let __theme;
         let __clock;
         let __menu;
+
+
+        window.__windowManager = WindowManager.initialise();
         
 
 ///////////////////////////////////////////////////////////

@@ -18,7 +18,9 @@
 //
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
+
     ServerConfig.staticPath = `${__dirname}${path.sep}public`;
+    global.__serverConfig = ServerConfig;
 
 
 ///////////////////////////////////////////////////////////
@@ -33,4 +35,5 @@
 //  Initialise and run the server.
 //
     const   __server = Server(ServerConfig);
+    
     __server.runAll();

@@ -25,9 +25,9 @@
             
             const   __date = new Date();
 
-            __hours = __date.getUTCHours();
-            __minutes = __date.getUTCMinutes();
-            __seconds = __date.getUTCSeconds();
+            __hours = __date.getHours();
+            __minutes = __date.getMinutes();
+            __seconds = __date.getSeconds();
 
             __hours = (__hours < 10) ? `0${__hours}` : __hours.toString();
             __minutes = (__minutes < 10) ? `0${__minutes}` : __minutes.toString();

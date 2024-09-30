@@ -7,6 +7,8 @@
 //  handlers for those routes.
 //
 
+    import { JaDeFS } from './../src/JaDeFS.js';
+
     import { DefaultTheme } from './../defaults/DefaultTheme.js';
 
     import { DB } from './../src/DB.js';
@@ -67,7 +69,7 @@
 //      JaDe/JaDe.js
 //
             '/filesystem/': (req, res) => {
-
+                return res.send(JSON.stringify(JaDeFS().list('/')));
             }
 
         }

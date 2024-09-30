@@ -12,7 +12,8 @@
 //
 
     import { App } from "./App.js";
-
+    import { WindowManager } from './core/WindowManager.js';
+    
     (() => {
         App();
     })();

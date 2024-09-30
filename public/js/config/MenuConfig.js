@@ -3,14 +3,17 @@
 ///////////////////////////////////////////////////////////
 //
 
+    import { FileManager } from './../core/FileManager.js';
+
+
     export const MenuConfig = [
 
         {
-            'id': 'start_menu_option_1',
-            'title': 'Select menu Option 1',
-            'content': 'Menu Option 1',
-            'callback': () => {
-                console.log(`You clicked Option 1`);
+            'id': 'menu_option_filemanager',
+            'title': 'Manage your files with the FileManager',
+            'content': 'File Manager',
+            'callback': function() {
+                new FileManager();
             }
         },
         {
