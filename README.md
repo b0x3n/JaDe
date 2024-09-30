@@ -8,6 +8,11 @@ The backend is written in __NodeJS__ and is using __express__
 and __mongoose__ - we can create and store files, run basic
 applications, etc.
 
+It's fairly simple, only started the project yesterday so
+a work in progress. This is a SPA, reserver returns a single
+index.html - all other requests are via the API which 
+receives & returns JSON.
+
 
 ## Prerequisites
 
