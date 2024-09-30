@@ -17,6 +17,7 @@
         background-color: #AAA;
         z-index: 3;
         user-select: none;
+        font-family: "Rethink Sans", sans-serif;
     }
 
         .start, .tasks, .clock {
@@ -51,10 +52,33 @@
         }
 
             .task {
+                position: relative;
+                float: left;
+                margin-left: 0px;
+                margin-right: 6px;
+                top: 3px;
                 width: auto;
-                height: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                /* height: 100%; */
+                height: 29px;
                 max-width: 220px;
-                border: solid 2px #000;
+                color: #FFF;
+                background-color: rgba(0, 0, 0, 0.25);
+                border-radius: 14px;
+                padding: 0px 6px;
+                border: solid 1px #FFF;
+                cursor: pointer;
+            }
+
+            .task:hover {
+                top: 4px;
+                margin-left: 1px;
+                color: #1AFA6A;
+                text-shadow: 1px 1px 1px #3AFF9A;
+                box-shadow: 1px 1px 1px #3AFF9A;
             }
             
 

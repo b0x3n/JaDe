@@ -39,6 +39,7 @@
 
 
         let _wInstance = false;
+        let _path = '/';
 
 
 ///////////////////////////////////////////////////////////
@@ -49,8 +50,8 @@
 
             _wInstance = wInstance;
 
-            console.log('Window ready!');
-            $(`#${wInstance.id}_content`).html(wInstance);
+            console.log(wInstance);
+            $(`#window_${wInstance.id}_content`).html(wInstance);
 
         };
 

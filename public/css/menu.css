@@ -4,6 +4,7 @@
  */
 
     .menu {
+        font-family: "Rethink Sans", sans-serif;
         position: absolute;
         flex-direction: column;
         left: 3px;
@@ -41,4 +42,7 @@
 
     .menu_option:hover {
         color: #1AFA6A;
+        top: 1px;
+        left: 1px;
+        text-shadow: -1px 1px 1px #3AFF9A;
     }

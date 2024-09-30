@@ -60,6 +60,10 @@
     };
 
 
+///////////////////////////////////////////////////////////
+//  NewWindow()                                          //
+///////////////////////////////////////////////////////////
+//
     function NewWindow(windowConfig) {
 
         let __canResize = '';
@@ -114,11 +118,20 @@
             'handle': `#window_${this.processes}_titlebar`
         });
 
+        const   __self = this;
+
         $(`#window_${this.processes}_close`).on('click', function() {
             const __id = $(this).attr('id').replace('window_', '').replace('_close', '');
             $(`#window_${__id}`).remove();
-            delete this.windows[`window_${this.processes}`];
+            $(`#task_${__id}`).remove();
+            delete __self.windows[`window_${__id}`];
         });
+
+        $(`#taskbar_tasks`).append(`
+            <div id="task_${this.processes}" class="task">
+                ${windowConfig['module']['name']}
+            </div>
+        `);
 
         this.windows[`window_${this.processes}`] = {
             'name': windowConfig['module']['name'],
@@ -132,6 +145,12 @@
     };
 
 
+///////////////////////////////////////////////////////////
+//  WindowedApps()                                       //
+///////////////////////////////////////////////////////////
+//
+//  Manages all windowed processes.
+//
     function WindowedApps() {
 
         this.windows = {};
@@ -142,17 +161,21 @@
     };
 
 
+///////////////////////////////////////////////////////////
+//  WindowManager()                                      //
+///////////////////////////////////////////////////////////
+//
+//  Will return a single instance of WindowedApps().
+//
     export const WindowManager = (function() {
 
         let wInstance = null;
-
 
         function _initialise() {
             if (wInstance === null)
                 wInstance = new WindowedApps();
             return wInstance;
         };
-
 
         return {
             'initialise': function() {
