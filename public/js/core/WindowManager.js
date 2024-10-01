@@ -93,8 +93,10 @@
 //
         if (this.windows[`window_${windowID}`]['state'] === 'maximised')
             this.windows[`window_${windowID}`]['state'] = 'minimised_max';
-        else
+        else {
+            this.windows[`window_${windowID}`]['position'] = document.getElementById(`window_${windowID}`).getBoundingClientRect();
             this.windows[`window_${windowID}`]['state'] = 'minimised';
+        }
 
         $(`#window_${windowID}`).animate({
             'left': `${__taskIconLeft}px`,
@@ -157,12 +159,15 @@
         let __width = `${__rect.width}px`;
         let __height = `${__rect.height}px`;
 
-        if (this.windows[`window_${windowID}`]['state'] === 'maximised_max') {
+        if (this.windows[`window_${windowID}`]['state'] === 'minimised_max') {
             __top = '0px';
             __left = '0px';
             __width = '100%';
             __height = `${parseInt($('#desktop').css('height').replace('px', '')) - 32}px`;
+            __self.windows[`window_${windowID}`]['state'] = 'maximised';
         }
+        else
+            __self.windows[`window_${windowID}`]['state'] = 'default';
 
         $(`#window_${windowID}`).stop().animate({
             'top': `${__top}`,
@@ -171,10 +176,6 @@
             'height': `${__height}`,
             'opacity': '0.99'
         }, 100, "swing", function() {
-            if (__self.windows[`window_${windowID}`]['state'] === 'maximised_max') 
-                __self.windows[`window_${windowID}`]['state'] = 'maximised';
-            else
-                __self.windows[`window_${windowID}`]['state'] = 'default';
         });
 
         return true;
@@ -255,22 +256,11 @@
             </div>
         `);
 
-
-        this.windows[`window_${__id}`] = {
-            'name': windowConfig['module']['name'],
-            'reference': windowConfig['module']['reference'],
-            'id': this.processes,
-            'state': 'default',
-            'position': document.getElementById(`window_${__id}`).getBoundingClientRect()
-        };
-
-
         const __manageResizeEvent = () => {
-            
             if (! $(`#window_${__id}`).length)
                 return;
             console.log(`move on ${__id}: ${__self.windows[`window_${__id}`]['state']}`)
-            if (__self.windows[`window_${__id}`]['state'] !== 'default')
+            if (__self.windows[`window_${__id}`]['state'] !== 'default' && typeof __self.windows[`window_${__id}`]['state'] !== 'undefined')
                 return;
             __self.windows[`window_${__id}`] = {
                 'position': document.getElementById(`window_${__id}`).getBoundingClientRect()
@@ -278,6 +268,9 @@
             console.log(`Set new window position`);
             console.log(__self.windows[`window_${__id}`]['position'])
         }
+
+        __manageResizeEvent.bind(this);
+
 //  Each window has its own object that stores some
 //  basic information about the current state.
 //
@@ -293,6 +286,14 @@
 
         __observeResize.observe(document.getElementById(`window_${this.processes}`));
 
+        __self.windows[`window_${__id}`] = {
+            'name': windowConfig['module']['name'],
+            'reference': windowConfig['module']['reference'],
+            'id': this.processes,
+            'state': 'default',
+            'position': document.getElementById(`window_${__id}`).getBoundingClientRect()
+        };
+        
         $(`#window_${this.processes}_close`).on('click', function() {
             const __id = $(this).attr('id').replace('window_', '').replace('_close', '');
             $(`#window_${__id}`).remove();
