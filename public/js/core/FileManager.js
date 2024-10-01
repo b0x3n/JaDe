@@ -179,7 +179,7 @@
                     'cursor': 'pointer'
                 });
             }
-
+console.log(`Updating path on ${_wInstance.id}, pathstring = ${__pathString}`)
             if (__pathString.substring(0, 1) !== '/')
                 $(`#window_${_wInstance.id}_path`).html(`/${__pathString}`);
             else

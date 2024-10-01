@@ -9,6 +9,73 @@
 
         let _wInstance = false;
 
+        let _terminalID = `window_%id%_content`;
+        let _terminalSize;
+        let _terminalRows;
+        let _terminalCols;
+
+        let _fontFamily = "'VT323', monospace";
+
+        let _cellWidth = 0;
+        let _cellHeight = 12;
+
+        let _fontColor = '#FFF';
+        let _fontBackground = '#000';
+
+        let _cursorColor = '#FFF';
+        let _cursorBackground = '#000';
+
+
+///////////////////////////////////////////////////////////
+//  __calculateCellWidth()                               //
+///////////////////////////////////////////////////////////
+//
+//  Populate the terminal with a single character then
+//  grab the width - the font needs to be monospace.
+//
+        const __calculateCellWidth = () => {
+
+            $(`#${_terminalID}`).html(`
+                <div
+                    id="${_terminalID}_testwidth"
+                    class="terminal_cell"
+                    style="
+                        font-family: ${_fontFamily};
+                        font-size: ${_cellHeight}px;
+                    "
+                >
+                    X
+                </div>
+            `);
+            
+            _cellWidth = parseInt($(`#${_terminalID}_testwidth`).css('width').replace('px', ''))
+        
+            $(`#${_terminalID}`).html('');
+
+        };
+
+
+///////////////////////////////////////////////////////////
+//  __createTerminalDisplay()                            //
+///////////////////////////////////////////////////////////
+//
+        const __createTerminalDisplay = () => {
+
+            __calculateCellWidth();
+            _terminalSize = document.getElementById(`window_${_wInstance.id}`).getBoundingClientRect();
+
+            console.log(`Cell width: ${_cellWidth}`);
+
+            _terminalRows = Math.floor(_terminalSize.height / _cellHeight);
+            _terminalCols = Math.floor(_terminalSize.width / _cellWidth);
+        
+            $(`#${_terminalID}`).css({
+                'color': _fontColor,
+                'background-color': _fontBackground
+            });
+            
+        };
+
 
 ///////////////////////////////////////////////////////////
 //  __initialise()                                       //
@@ -20,6 +87,7 @@
         const __initialise = wInstance => {
 
             _wInstance = wInstance;
+            _terminalID = _terminalID.replace('%id%', wInstance.id);
 
             const   __desktopWidth = parseInt($(`#desktop`).css('width').replace('px', ''));
             const   __desktopHeight = parseInt($(`#desktop`).css('height').replace('px', ''));
@@ -38,11 +106,8 @@
                 'width': `${__width}px`,
                 'height': `${__height}px`
             });
-
-            $(`#window_${wInstance.id}_content`).css({
-                'background-color': '#000',
-                'color': '#FFF'
-            });
+            
+            __createTerminalDisplay();
 
         };
 

@@ -197,7 +197,7 @@
             __canResize = `resize: both;`;
 
         if (windowConfig.hasOwnProperty('toolbar'))
-            windowConfig['toolbar'] =  windowConfig['toolbar'].replaceAll("%id%","Dogs");
+            windowConfig['toolbar'] =  windowConfig['toolbar'].replaceAll("%id%", __id);
         else
             windowConfig['toolbar'] = '';
 
@@ -256,14 +256,11 @@
         const __manageResizeEvent = () => {
             if (! $(`#window_${__id}`).length)
                 return;
-            console.log(`move on ${__id}: ${__self.windows[`window_${__id}`]['state']}`)
             if (__self.windows[`window_${__id}`]['state'] !== 'default' && typeof __self.windows[`window_${__id}`]['state'] !== 'undefined')
                 return;
             __self.windows[`window_${__id}`] = {
                 'position': document.getElementById(`window_${__id}`).getBoundingClientRect()
             }
-            console.log(`Set new window position`);
-            console.log(__self.windows[`window_${__id}`]['position'])
         }
 
         __manageResizeEvent.bind(this);
@@ -306,8 +303,6 @@
             if (__self.windows[`window_${__id}`]['state'] === 'minimised')
                 return;
             __self.windows[`window_${__id}`]['position'] = document.getElementById(`window_${__id}`).getBoundingClientRect()
-            console.log(`Set new window position`);
-            console.log(__self.windows[`window_${__id}`]['position'])
         });
 
         $(`#window_${this.processes}_minimise`).on('click', function() {

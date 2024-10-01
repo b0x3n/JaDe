@@ -71,6 +71,7 @@
             height: 320px;
             font-family: "Rethink Sans", sans-serif;
             border-radius: 6px;
+            border: solid 1px #555;
             background-color: #CBB;
             color: #224;
             overflow: hidden;
@@ -210,3 +211,13 @@
         bottom: 6px;
         text-align: center;
     }
+
+    .terminal_cell {
+        position: relative;
+        float: left;
+        width: auto;
+        height: auto;
+        margin: 0px;
+        padding: 0px;
+    }
+    
