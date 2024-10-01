@@ -100,7 +100,6 @@
                 height: calc(100% - 38px);
                 margin: 0px 0px 6px 6px;
                 background-color: #FFF;
-                padding: 1vw;
             }
 
 
@@ -111,7 +110,7 @@
         height: 64px;
         background-size: 48px 48px;
         background-repeat: no-repeat;
-        margin: 0px 1vw 1vw 0vw;
+        margin: 1vw 1vw 0px 1vw;
         cursor: pointer;
     }
 
@@ -120,7 +119,7 @@
     }
 
     .window_file {
-        background-image: url(/images/icons/folder.png);
+        background-image: url(/images/icons/file.png);
     }
 
     .window_directory p,

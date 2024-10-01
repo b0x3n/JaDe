@@ -14,7 +14,7 @@
 //  make an absolute path - makes it easier to implement
 //  things like a back button.
 //
-        let _path = [ 'a', 'b', 'c' ];
+        let _path = [];
 
 
 ///////////////////////////////////////////////////////////
@@ -31,8 +31,10 @@
                 _pathString += path;
             });
 
-            if (_pathString.substring(0, 1) !== '/')
-                _pathString = `/${_pathString}`;
+            if (_pathString === '') _pathString = '/';
+
+            // if (_pathString.substring(0, 1) !== '/')
+            //     _pathString = `/${_pathString}`;
 
             return _pathString;
 
@@ -71,11 +73,14 @@
 //
         const __populateFileManager = async () => {
 
-            const __pathString = __buildPath();
+            let __pathString = __buildPath();
             let __htmlOutput = '';
 
+            if (__pathString === '/')
+                __pathString = 'root';
+
             $.ajaxSetup({'dataType': 'json'});
-            let __fileInfo = await $.ajax('/filesystem');
+            let __fileInfo = await $.ajax(`/filesystem/${__pathString}`);
 
             __fileInfo = JSON.parse(__fileInfo);
 
@@ -89,6 +94,12 @@
             });
 
             $(`#window_${_wInstance.id}_content`).html(__htmlOutput);
+
+            $(`.window_directory`).on('dblclick', function() {
+                const __id = $(this).attr('id');
+                _path.push($(`#${__id} p`).html());
+                __populateFileManager();
+            });
 
         };
 

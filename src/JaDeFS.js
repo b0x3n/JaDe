@@ -24,6 +24,8 @@
                 filePath = __root;
             else
                 filePath = `${__root}${path.sep}${filePath}`;
+
+            // console.log(`JaDeFS returning path: ${filePath}`);
             
 //  Make sure filePath exists, if it's a file then
 //  the file data is returned, if it's a directory
@@ -35,16 +37,21 @@
                 });
             }
 
-            if (fs.lstatSync(filePath).isFile())
+            if (fs.lstatSync(filePath).isFile()) {
+                console.log(`filePath ${filePath} is a file`)
                 return JSON.stringify({
                     'fileType': 'file',
                     'filePath': filePath,
                     'fileData': fs.readFileSync(filePath)
                 });
+            }
 
             const _dirList = fs.readdirSync(filePath).map(fileName => {
+                let fileType = 'directory';
+                if (fs.lstatSync(`${filePath}${path.sep}${fileName}`).isFile())
+                    fileType = 'file';
                 return JSON.stringify({
-                    'fileType': 'directory',
+                    'fileType': fileType,
                     'filePath': fileName,
                     'fileData': '' 
                 });

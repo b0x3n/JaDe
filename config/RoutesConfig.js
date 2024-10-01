@@ -71,8 +71,12 @@
 //
 //      JaDe/JaDe.js
 //
-            '/filesystem': (req, res) => {
-                return res.send(JSON.stringify(JaDeFS().list('/')));
+            '/filesystem/:path': (req, res) => {
+                let __path = req.params.path;
+                if (__path === 'root')
+                    __path = '/';
+                console.log(`Received fs lookup, path ${__path}`)
+                return res.send(JSON.stringify(JaDeFS().list(__path)));
             }
 
         }
