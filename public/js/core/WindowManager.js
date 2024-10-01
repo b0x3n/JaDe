@@ -183,6 +183,8 @@
 //  position/size.
 //
         let __observeResize = new ResizeObserver(() => {
+            if (! $(`#window_${__id}`).length)
+                return;
             __self.windows[`window_${__id}`] = {
                 'position': document.getElementById(`window_${__id}`).getBoundingClientRect()
             }
