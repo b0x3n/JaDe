@@ -82,24 +82,84 @@
 //
     function MinimiseWindow(windowID) {
 
-        console.log(`Minimising window ${windowID}`);
-
 //  First, we need to get the task icon for this window in
 //  the taskbar - we need its location.
 //
         const __taskIcon = document.getElementById(`task_${windowID}`);
-
-        if (! __taskIcon.length)
-            return false;
-
         const __taskIconLeft = __taskIcon.getBoundingClientRect().left;
         
+//  This will prevent the resize/drag events from changing
+//  the current window position/dimensions.
+//
+        this.windows[`window_${windowID}`]['state'] = 'minimised';
+
         $(`#window_${windowID}`).animate({
-            'left': `${__left}px`,
-            'top': '100vw',
+            'left': `${__taskIconLeft}px`,
+            'top': '100%',
+            'height': '0px',
+            'width': '0px',
             'opacity': '0.01'
-        }, 100, "linear", function() {
+        }, 100, "swing", () => {
             $(this).css('display', 'none');
+        });
+
+        return true;
+
+    };
+
+
+///////////////////////////////////////////////////////////
+//  MaximiseWindow()                                     //
+///////////////////////////////////////////////////////////
+//
+    function MaximiseWindow(windowID) {
+
+        const __self = this;
+        const __height = (document.getElementById('desktop').getBoundingClientRect().height - 32);
+
+        if (__self.windows[`window_${windowID}`]['state'] !== 'maximised') {
+            __self.windows[`window_${windowID}`]['state'] = 'maximised';
+
+            $(`#window_${windowID}`).stop().animate({
+                'top': '0px',
+                'left': '0px',
+                'width': '100%',
+                'height': `${__height}px`,
+                'opacity': '0.99'
+            }, 100, "swing");
+        }
+        else {
+            __self.windows[`window_${windowID}`]['state'] = 'minimised';
+            __self.restoreWindow(windowID);
+        }
+    };
+
+
+///////////////////////////////////////////////////////////
+//  MaximiseWindow()                                     //
+///////////////////////////////////////////////////////////
+//
+    function RestoreWindow(windowID) {
+
+        const __self = this;
+
+        if (this.windows[`window_${windowID}`]['state'] !== 'minimised')
+            return false;
+
+        console.log('Yeah')
+
+        const __rect = this.windows[`window_${windowID}`]['position'];
+
+        $(`#window_${windowID}`).css('display', 'block');
+
+        $(`#window_${windowID}`).stop().animate({
+            'top': `${__rect.top}px`,
+            'left': `${__rect.left}px`,
+            'width': `${__rect.width}px`,
+            'height': `${__rect.height}px`,
+            'opacity': '0.99'
+        }, 100, "swing", function() {
+            __self.windows[`window_${windowID}`]['state'] = 'default';
         });
 
         return true;
@@ -112,6 +172,9 @@
 ///////////////////////////////////////////////////////////
 //
     function NewWindow(windowConfig) {
+
+        const __self = this;
+        const __id = this.processes;
 
         let __canResize = '';
 
@@ -167,7 +230,24 @@
             .replace('%minimise%', __minimiseIcon)
             .replace('%close%', __closeIcon);
 
+//  Create the window and add it to the taskbar
+//
         $(`#${windowConfig['target']}`).append(__windowHtml);
+
+        $(`#taskbar_tasks`).append(`
+            <div id="task_${this.processes}" class="task">
+                ${windowConfig['module']['name']}
+            </div>
+        `);
+
+
+        this.windows[`window_${this.processes}`] = {
+            'name': windowConfig['module']['name'],
+            'reference': windowConfig['module']['reference'],
+            'id': this.processes,
+            'state': 'default',
+            'position': document.getElementById(`window_${__id}`).getBoundingClientRect()
+        };
 
 //  Each window has its own object that stores some
 //  basic information about the current state.
@@ -175,15 +255,13 @@
 //  We also must remember the size and position of
 //  the window for minimisation/restoration.
 //
-
-        const __self = this;
-        const __id = this.processes;
-
 //  Need to watch the window for resize - update the
 //  position/size.
 //
         let __observeResize = new ResizeObserver(() => {
             if (! $(`#window_${__id}`).length)
+                return;
+            if (__self.windows[`window_${__id}`]['state'] !== 'default')
                 return;
             __self.windows[`window_${__id}`] = {
                 'position': document.getElementById(`window_${__id}`).getBoundingClientRect()
@@ -191,12 +269,6 @@
             console.log(`Set new window position`);
             console.log(__self.windows[`window_${__id}`]['position'])
         });
-
-        // $(`#window_${this.processes}`).on('change', function() {
-        //     __self.windows[`window_${this.processes}`]['position'] = this.getBoundingClientRect();
-        //     console.log(`Updated position of ${__self.processes}`);
-        //     console.log(__self.windows[`window_${__self.processes}`]);
-        // });
 
         __observeResize.observe(document.getElementById(`window_${this.processes}`));
 
@@ -212,6 +284,8 @@
         });
 
         $(`#window_${this.processes}`).on('drag', function() {
+            if (__self.windows[`window_${__id}`]['state'] === 'minimised')
+                return;
             __self.windows[`window_${__id}`]['position'] = document.getElementById(`window_${__id}`).getBoundingClientRect()
             console.log(`Set new window position`);
             console.log(__self.windows[`window_${__id}`]['position'])
@@ -219,23 +293,28 @@
 
         $(`#window_${this.processes}_minimise`).on('click', function() {
             const __id = $(this).attr('id').replace('window_', '').replace('_minimise', '');
-            MinimiseWindow(__id);
+            __self.minimiseWindow(__id);
         });
 
-        $(`#taskbar_tasks`).append(`
-            <div id="task_${this.processes}" class="task">
-                ${windowConfig['module']['name']}
-            </div>
-        `);
+        $(`#window_${this.processes}_maximise`).on('click', function() {
+            const __id = $(this).attr('id').replace('window_', '').replace('_maximise', '');
+            __self.maximiseWindow(__id);
+        });
 
-        this.windows[`window_${this.processes}`] = {
-            'name': windowConfig['module']['name'],
-            'reference': windowConfig['module']['reference'],
-            'id': this.processes,
-            'state': 'default',
-            'position': document.getElementById(`window_${__id}`).getBoundingClientRect()
-        };
+        $(`#task_${this.processes}`).on('click', function() {
+            if (__self.windows[`window_${__id}`]['state'] !== 'minimised')
+                __self.minimiseWindow(__id);
+            else
+                __self.restoreWindow(__id);
+        });
 
+///////////////////////////////////////////////////////////
+//  All windowed apps should have an onload event in
+//  the config, this is called to pass the window ID to
+//  the application module.
+//
+        if (! windowConfig.hasOwnProperty('onload'))
+            throw new Error(`Error creating window - the windowConfig requires an 'onload' property`);
         windowConfig['onload'](this.windows[`window_${this.processes}`]);
 
         this.processes++;
@@ -256,6 +335,8 @@
 
         this.newWindow = NewWindow.bind(this);
         this.minimiseWindow = MinimiseWindow.bind(this);
+        this.maximiseWindow = MaximiseWindow.bind(this);
+        this.restoreWindow = RestoreWindow.bind(this);
 
     };
 
