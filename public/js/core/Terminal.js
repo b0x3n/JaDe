@@ -21,8 +21,24 @@
 
             _wInstance = wInstance;
 
+            const   __desktopWidth = parseInt($(`#desktop`).css('width').replace('px', ''));
+            const   __desktopHeight = parseInt($(`#desktop`).css('height').replace('px', ''));
+
+            let __width = (__desktopWidth - 80);
+            let __height = (__desktopHeight - 80);
+
+            if (__desktopWidth > 600)
+                __width = 600;
+            if (__desktopHeight > 400)
+                __height = 400;
+
             $(`#window_${wInstance.id}_titlebar`).append(`(${wInstance.id - 199})`);
         
+            $(`#window_${wInstance.id}`).css({
+                'width': `${__width}px`,
+                'height': `${__height}px`
+            });
+
             $(`#window_${wInstance.id}_content`).css({
                 'background-color': '#000',
                 'color': '#FFF'

@@ -336,6 +336,11 @@
             throw new Error(`Error creating window - the windowConfig requires an 'onload' property`);
         windowConfig['onload'](this.windows[`window_${this.processes}`]);
 
+        $(`#window_${this.processes}`).on('click', function() {
+            $(`.window`).css('zIndex', 200);
+            $(this).css('zIndex', 65000);
+        });
+
         this.processes++;
 
     };
