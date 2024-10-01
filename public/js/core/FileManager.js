@@ -16,6 +16,15 @@
 //
         let _path = [];
 
+///////////////////////////////////////////////////////////
+//  We have a reverse _forward[] stack that acts contrary
+//  to _path - when we click 'back' the top of _path is
+//  popped into _forward[] - if we click 'forward'
+//  then the first item is shifted back into the
+//  _path[] stack...I, er - i-i-it's complicated!
+//
+        let _forward = [];
+
 
 ///////////////////////////////////////////////////////////
 //  __buildPath()                                        //
@@ -41,6 +50,10 @@
         };
 
 
+///////////////////////////////////////////////////////////
+//  ___getDirectoryLink()                                //
+///////////////////////////////////////////////////////////
+//
         const __getDirectoryLink = fileInfo => {
             return `
                 <div
@@ -54,6 +67,10 @@
         };
 
 
+///////////////////////////////////////////////////////////
+//  ___getFileLink()                                     //
+///////////////////////////////////////////////////////////
+//
         const __getFileLink = fileInfo => {
             return `
                 <div
@@ -68,6 +85,78 @@
 
 
 ///////////////////////////////////////////////////////////
+//  __handleBackButton()                                 //
+///////////////////////////////////////////////////////////
+//
+        const __handleBackButton = windowID => {
+
+            console.log(`Back on ${windowID}`)
+
+//  We pop the last entry in the _path stack then
+//  call the __populateFileManager() method.
+//
+//  Pop it to _forward()...put it in H and I'm sure
+//  you'll agree - Zagreb ebnom zlotdik!
+//
+            if (_path.length)
+                _forward.push(_path.pop());
+
+//  If the _path stack is now empty we disable the
+//  back button.
+//
+            if (! _path.length)
+                $(`#window_${windowID}_back`).css({
+                    'opacity': '0.50',
+                    'cursor': 'default'
+                });
+
+            return __populateFileManager();
+
+//
+//  TODO: Need to cache previously viewed directories
+//  instead of calling __populateFileManager each time.
+//
+
+        };
+
+
+///////////////////////////////////////////////////////////
+//  __handleForwardButton()                              //
+///////////////////////////////////////////////////////////
+//
+        const __handleForwardButton = windowID => {
+
+            if (! _forward.length)
+                return __clearForward();
+
+            if (_forward.length)
+                _path.push(_forward.shift());
+
+            if (! _forward.length)
+                $(`#window_${windowID}_forward`).css({
+                    'opacity': '0.50',
+                    'cursor': 'default'
+                });
+
+            return __populateFileManager();
+
+        };
+
+
+///////////////////////////////////////////////////////////
+//  __clearForward()                                     //
+///////////////////////////////////////////////////////////
+//
+        const __clearForward = windowID => {
+            _forward = [];
+            $(`#window_${windowID}_forward`).css({
+                'opacity': '0.50',
+                'cursor': 'default'
+            });
+        };
+
+
+///////////////////////////////////////////////////////////
 //  __populateFileManager()                              //
 ///////////////////////////////////////////////////////////
 //
@@ -75,6 +164,26 @@
 
             let __pathString = __buildPath();
             let __htmlOutput = '';
+
+            if (_path.length) {
+                $(`#window_${_wInstance.id}_back`).css({
+                    'opacity': '0.99',
+                    'background-color': '#FFF',
+                    'cursor': 'pointer'
+                });
+            }
+            if (_forward.length) {
+                $(`#window_${_wInstance.id}_forward`).css({
+                    'opacity': '0.99',
+                    'background-color': '#FFF',
+                    'cursor': 'pointer'
+                });
+            }
+
+            if (__pathString.substring(0, 1) !== '/')
+                $(`#window_${_wInstance.id}_path`).html(`/${__pathString}`);
+            else
+                $(`#window_${_wInstance.id}_path`).html(__pathString);
 
             if (__pathString === '/')
                 __pathString = 'root';
@@ -98,7 +207,15 @@
             $(`.window_directory`).on('dblclick', function() {
                 const __id = $(this).attr('id');
                 _path.push($(`#${__id} p`).html());
+                __clearForward(_wInstance.id);
                 __populateFileManager();
+            });
+
+            $(`#window_${_wInstance.id}_forward`).on('click', function() {
+                __handleForwardButton(_wInstance.id);
+            });
+            $(`#window_${_wInstance.id}_back`).on('click', function() {
+                __handleBackButton(_wInstance.id);
             });
 
         };
