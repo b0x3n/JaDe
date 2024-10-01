@@ -218,6 +218,19 @@
                 __handleBackButton(_wInstance.id);
             });
 
+            $(`#window_${_wInstance.id}_content`).on('mousedown', function(ev) {
+                ev.preventDefault();
+                if (ev.button !== 2)
+                    return;
+            });
+
+            $(`#window_${_wInstance.id}_content > .window_directory`).on('mousedown', function(ev) {
+                ev.stopPropagation();
+                ev.preventDefault();
+                if (ev.button !== 2)
+                    return;
+            });
+
         };
 
 
@@ -260,6 +273,16 @@
                 'isSingleton': false,
                 'canTerminate': true
             },
+            'toolbar': `
+                <div
+                    id="window_%id%_toolbar"
+                    class="window_toolbar"
+                >
+                    <div id="window_%id%_back" class="window_back">&nbsp;</div>
+                    <div id="window_%id%_forward" class="window_forward">&nbsp;</div>
+                    <div id="window_%id%_path" class="window_path">&nbsp;</div>    
+                </div>
+            `,
             'onload': wInstance => {
                 __initialise(wInstance);
             }

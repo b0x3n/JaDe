@@ -175,8 +175,7 @@
             'width': `${__width}`,
             'height': `${__height}`,
             'opacity': '0.99'
-        }, 100, "swing", function() {
-        });
+        }, 100, "swing");
 
         return true;
 
@@ -197,20 +196,18 @@
         if (windowConfig['options']['canResize'])
             __canResize = `resize: both;`;
 
+        if (windowConfig.hasOwnProperty('toolbar'))
+            windowConfig['toolbar'] =  windowConfig['toolbar'].replaceAll("%id%","Dogs");
+        else
+            windowConfig['toolbar'] = '';
+
         let __windowHtml = `
             <${windowConfig['elementType']}
                 id="window_${this.processes}"
                 class="window"
                 style="z-index: ${this.processes}; ${__canResize}"
             >
-                <div
-                    id="window_${this.processes}_toolbar"
-                    class="window_toolbar"
-                >
-                    <div id="window_${this.processes}_back" class="window_back">&nbsp;</div>
-                    <div id="window_${this.processes}_forward" class="window_forward">&nbsp;</div>
-                    <div id="window_${this.processes}_path" class="window_path">&nbsp;</div>    
-                </div>
+                %toolbar%
                 %titlebar%
                 %close%
                 %maximise%
@@ -219,7 +216,7 @@
                     &nbsp;
                 </div>
             </${windowConfig['elementType']}>
-        `;
+        `.replace('%toolbar%', windowConfig['toolbar']);
 
         let __titleBar = '';
         let __maximiseIcon = '';

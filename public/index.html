@@ -16,16 +16,38 @@
         <link rel="stylesheet" type="text/css" href="./css/taskbar.css">
         <link rel="stylesheet" type="text/css" href="./css/menu.css">
     </head>
-    <body>
+    <body oncontextmenu="return false">
         <div id="outer">
             <div id="inner">
                 <div id="desktop">
-                    <div
-                        id="icon_filemanager"
-                        class="desktop_icon"
-                        title="Open the file system in the root (/) directory"
-                    >
-                        &nbsp;
+                    <div class="desktop_icon_wrapper">
+                        <div
+                            id="icon_filemanager"
+                            class="desktop_icon"
+                            title="Open the file system in the root (/) directory"
+                        >
+                        </div>
+                        <p>File Manager</p>
+                    </div>
+                    
+                    <div class="desktop_icon_wrapper">
+                        <div
+                            id="icon_fileeditor"
+                            class="desktop_icon"
+                            title="Open the file editor"
+                        >
+                        </div>
+                        <p>File Editor</p> 
+                    </div>
+                    
+                    <div class="desktop_icon_wrapper">
+                        <div
+                            id="icon_terminal"
+                            class="desktop_icon"
+                            title="Open the terminal"
+                        >
+                        </div>
+                        <p>Terminal</p>
                     </div>
                 </div>
                 <div id="start_menu" class="menu">

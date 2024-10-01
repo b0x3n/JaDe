@@ -4,6 +4,8 @@
 //
 
     import { FileManager } from './../core/FileManager.js';
+    import { FileEditor } from './../core/FileEditor.js';
+    import { Terminal } from './../core/Terminal.js';
 
 
     export const MenuConfig = [
@@ -17,19 +19,19 @@
             }
         },
         {
-            'id': 'start_menu_option_2',
-            'title': 'Select menu Option 2',
-            'content': 'Menu Option 2',
+            'id': 'menu_option_fileeditor',
+            'title': 'Create and edit files',
+            'content': 'File Editor',
             'callback': () => {
-                console.log(`You clicked Option 2`);
+                new FileEditor();
             }
         },
         {
-            'id': 'start_menu_option_3',
-            'title': 'Select menu Option 3',
-            'content': 'Menu Option 3',
+            'id': 'menu_option_terminal',
+            'title': 'Open a new terminal',
+            'content': 'Terminal',
             'callback': () => {
-                console.log(`You clicked Option 3`);
+                new Terminal();
             }
         },
         {
