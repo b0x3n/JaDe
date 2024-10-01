@@ -23,6 +23,7 @@
             background-size: cover;
             background-repeat: no-repeat;
             cursor: pointer;
+            margin: 6px;
         }
 
             #icon_filemanager {

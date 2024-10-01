@@ -91,7 +91,10 @@
 //  This will prevent the resize/drag events from changing
 //  the current window position/dimensions.
 //
-        this.windows[`window_${windowID}`]['state'] = 'minimised';
+        if (this.windows[`window_${windowID}`]['state'] === 'maximised')
+            this.windows[`window_${windowID}`]['state'] = 'minimised_max';
+        else
+            this.windows[`window_${windowID}`]['state'] = 'minimised';
 
         $(`#window_${windowID}`).animate({
             'left': `${__taskIconLeft}px`,
@@ -129,7 +132,6 @@
             }, 100, "swing");
         }
         else {
-            __self.windows[`window_${windowID}`]['state'] = 'minimised';
             __self.restoreWindow(windowID);
         }
     };
@@ -143,23 +145,36 @@
 
         const __self = this;
 
-        if (this.windows[`window_${windowID}`]['state'] !== 'minimised')
+        if (this.windows[`window_${windowID}`]['state'] === 'default')
             return false;
-
-        console.log('Yeah')
 
         const __rect = this.windows[`window_${windowID}`]['position'];
 
         $(`#window_${windowID}`).css('display', 'block');
 
+        let __top = `${__rect.top}px`;
+        let __left = `${__rect.left}px`;
+        let __width = `${__rect.width}px`;
+        let __height = `${__rect.height}px`;
+
+        if (this.windows[`window_${windowID}`]['state'] === 'maximised_max') {
+            __top = '0px';
+            __left = '0px';
+            __width = '100%';
+            __height = `${parseInt($('#desktop').css('height').replace('px', '')) - 32}px`;
+        }
+
         $(`#window_${windowID}`).stop().animate({
-            'top': `${__rect.top}px`,
-            'left': `${__rect.left}px`,
-            'width': `${__rect.width}px`,
-            'height': `${__rect.height}px`,
+            'top': `${__top}`,
+            'left': `${__left}`,
+            'width': `${__width}`,
+            'height': `${__height}`,
             'opacity': '0.99'
         }, 100, "swing", function() {
-            __self.windows[`window_${windowID}`]['state'] = 'default';
+            if (__self.windows[`window_${windowID}`]['state'] === 'maximised_max') 
+                __self.windows[`window_${windowID}`]['state'] = 'maximised';
+            else
+                __self.windows[`window_${windowID}`]['state'] = 'default';
         });
 
         return true;
@@ -241,7 +256,7 @@
         `);
 
 
-        this.windows[`window_${this.processes}`] = {
+        this.windows[`window_${__id}`] = {
             'name': windowConfig['module']['name'],
             'reference': windowConfig['module']['reference'],
             'id': this.processes,
@@ -249,6 +264,20 @@
             'position': document.getElementById(`window_${__id}`).getBoundingClientRect()
         };
 
+
+        const __manageResizeEvent = () => {
+            
+            if (! $(`#window_${__id}`).length)
+                return;
+            console.log(`move on ${__id}: ${__self.windows[`window_${__id}`]['state']}`)
+            if (__self.windows[`window_${__id}`]['state'] !== 'default')
+                return;
+            __self.windows[`window_${__id}`] = {
+                'position': document.getElementById(`window_${__id}`).getBoundingClientRect()
+            }
+            console.log(`Set new window position`);
+            console.log(__self.windows[`window_${__id}`]['position'])
+        }
 //  Each window has its own object that stores some
 //  basic information about the current state.
 //
@@ -259,15 +288,7 @@
 //  position/size.
 //
         let __observeResize = new ResizeObserver(() => {
-            if (! $(`#window_${__id}`).length)
-                return;
-            if (__self.windows[`window_${__id}`]['state'] !== 'default')
-                return;
-            __self.windows[`window_${__id}`] = {
-                'position': document.getElementById(`window_${__id}`).getBoundingClientRect()
-            }
-            console.log(`Set new window position`);
-            console.log(__self.windows[`window_${__id}`]['position'])
+            __manageResizeEvent();
         });
 
         __observeResize.observe(document.getElementById(`window_${this.processes}`));
@@ -302,7 +323,7 @@
         });
 
         $(`#task_${this.processes}`).on('click', function() {
-            if (__self.windows[`window_${__id}`]['state'] !== 'minimised')
+            if (__self.windows[`window_${__id}`]['state'] !== 'minimised' && __self.windows[`window_${__id}`]['state'] !== 'minimised_max')
                 __self.minimiseWindow(__id);
             else
                 __self.restoreWindow(__id);
