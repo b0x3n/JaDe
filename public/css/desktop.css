@@ -213,11 +213,20 @@
     }
 
     .terminal_cell {
-        position: relative;
-        float: left;
+        position: absolute;
         width: auto;
         height: auto;
         margin: 0px;
         padding: 0px;
+        font-family: 'VT323', monospace;
+        font-size: 20px;
+        line-height: 18px;
+        color: #FFF;
+        background-color: #000;
     }
     
+        #cell_testwidth {
+            top: -100vh;
+            left: -100vw;
+        }
+        

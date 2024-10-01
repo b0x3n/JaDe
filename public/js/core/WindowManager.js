@@ -201,6 +201,11 @@
         else
             windowConfig['toolbar'] = '';
 
+        if (! windowConfig.hasOwnProperty('content'))
+            windowConfig['content'] = '';
+        else
+            windowConfig['content'] = windowConfig['content'].replace("%id%", __id);
+
         let __windowHtml = `
             <${windowConfig['elementType']}
                 id="window_${this.processes}"
@@ -213,7 +218,7 @@
                 %maximise%
                 %minimise%
                 <div id="window_${this.processes}_content" class="window_content">
-                    &nbsp;
+                    ${windowConfig['content']}
                 </div>
             </${windowConfig['elementType']}>
         `.replace('%toolbar%', windowConfig['toolbar']);
@@ -246,7 +251,7 @@
 //  Create the window and add it to the taskbar
 //
         $(`#${windowConfig['target']}`).append(__windowHtml);
-
+            
         $(`#taskbar_tasks`).append(`
             <div id="task_${this.processes}" class="task">
                 ${windowConfig['module']['name']}
@@ -256,6 +261,8 @@
         const __manageResizeEvent = () => {
             if (! $(`#window_${__id}`).length)
                 return;
+            if (windowConfig.hasOwnProperty('resize') && typeof windowConfig['resize'] === 'function')
+                windowConfig['resize'](__id);
             if (__self.windows[`window_${__id}`]['state'] !== 'default' && typeof __self.windows[`window_${__id}`]['state'] !== 'undefined')
                 return;
             __self.windows[`window_${__id}`] = {

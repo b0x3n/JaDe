@@ -22,6 +22,10 @@
         let __clock;
         let __menu;
 
+        let __terminal = {};
+
+        __terminal.fontFamily = '"VT323", monospace';
+        __terminal.fontSize = 20;
 
         window.__windowManager = WindowManager.initialise();
         
@@ -43,6 +47,12 @@
                     let __id = $(this).attr('id').replace('icon_', '');
                     $(`#menu_option_${__id}`).trigger('click');
                 });
+
+                // $(`#cell_testwidth`).css({
+                //     'font-family': `${__terminal.fontFamily}`,
+                //     'font-size': `${__terminal.fontSize}px`,
+                //     'line-height': `${__terminal.fontSize - 2}px`
+                // });
             });
   
         };
