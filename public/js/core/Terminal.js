@@ -36,6 +36,9 @@
         let _cursorX = 0;
 
         let _inputBuffer = '';
+        let _outputBuffer = '';
+
+        let _inputMask = false;
 
 
 ///////////////////////////////////////////////////////////
@@ -138,19 +141,99 @@
 
 
 ///////////////////////////////////////////////////////////
-//  __enableKeyboardEvents()                             //
+//  __disableCursor()                                    //
 ///////////////////////////////////////////////////////////
 //
-        const __enableKeyboardEvents = () => {
-
-            $(`*`).on('keypress', function(ev) {
-
-                const _key = ev.code;
-
-                if ($(this).hasFocus())
-                    console.log(`Keypress ${_key}`);
-
+        const __disableCursor = () => {
+            $(`#window_${_wInstance.id}_${_cursorY}_${_cursorX}`).css({
+                'color': _cursorColor,
+                'background-color': _cursorBackground
             });
+
+            if (_cursorBlinkTimeoutID) {
+                clearInterval(_cursorBlinkTimeoutID);
+                _cursorBlinkTimeoutID = false;
+            }
+        };
+
+
+///////////////////////////////////////////////////////////
+//  __executeCommand()                                   //
+///////////////////////////////////////////////////////////
+//
+        const __executeCommand = async () => {
+
+            if (_inputBuffer !== '') {
+//  We send the command string to the /command/ route
+//  and await the response.
+//
+                $.ajaxSetup({'dataType': 'json'});
+                const __commandOutput = await $.ajax(`/exec_command/${_inputBuffer}`);
+                _inputBuffer = '';
+
+                return __commandOutput;
+            }
+
+            return {};
+
+        };
+
+
+///////////////////////////////////////////////////////////
+//  __nextLine()                                         //
+///////////////////////////////////////////////////////////
+//
+        const __nextLine = () => {
+
+            __disableCursor();
+            _cursorY++;
+            _cursorX = 0;
+            __enableCursor();
+
+        };
+
+
+///////////////////////////////////////////////////////////
+//  __putChar()                                          //
+///////////////////////////////////////////////////////////
+//
+        const __putChar = char => {
+
+            $(`#window_${_wInstance.id}_${_cursorY}_${_cursorX}`).html(char);
+
+            __disableCursor();
+
+            _cursorX++;
+
+            if (_cursorX >= _terminalCols)
+                __nextLine();
+
+            __enableCursor();
+
+        };
+
+
+///////////////////////////////////////////////////////////
+//  __handleKeypress()                                   //
+///////////////////////////////////////////////////////////
+//
+        const __handleKeypress = async (ev, keytype) => {
+
+            if (keytype === 'keydown') {
+                if (ev.code === 'Enter') {
+                    const __response = await __executeCommand();
+                    console.log(__response);
+                    __nextLine();
+                }
+                else if (ev.code === 'Backspace' || ev.code === 'NumpadDecimal')
+                    console.log(`Delete key`);
+            }
+            else {
+                const __key = String.fromCharCode(ev.keyCode);
+                _inputBuffer += __key;
+                _outputBuffer += __key;
+                __putChar(__key);
+            }
 
         };
 
@@ -188,6 +271,13 @@
             __createTerminalDisplay();
             __enableCursor();
             //__enableKeyboardEvents();
+
+            $(`#window_${wInstance.id}`).on('keypress', (ev) => {
+                __handleKeypress(ev, 'keypress');
+            });
+            $(`#window_${wInstance.id}`).on('keydown', (ev) => {
+                __handleKeypress(ev,'keydown');
+            });
             
         };
 
@@ -225,9 +315,6 @@
                     __createTerminalDisplay();
                     __terminalTimeoutID = false;
                 }, 50)
-            },
-            'keypress': (id, ev) => {
-                console.log(`Terminal ${id} got key ${ev.code}`);
             }
         });
 

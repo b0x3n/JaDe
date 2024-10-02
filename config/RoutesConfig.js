@@ -77,9 +77,25 @@
                     __path = '/';
                 console.log(`Received fs lookup, path ${__path}`)
                 return res.send(JSON.stringify(JaDeFS().list(__path)));
+            },
+
+
+///////////////////////////////////////////////////////////
+//  Remote command execution.
+//
+            '/exec_command/:command_string': (req, res) => {
+                const __commandString = req.params.command_string;
+
+                const _objResponse = {
+                    'output': 'Your output, m\'sieur!'
+                };
+
+                console.log(`Received command: ${__commandString}`);
+
+                return res.send(JSON.stringify(_objResponse));
             }
 
-        }
+        },
 
     };
 
