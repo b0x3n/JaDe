@@ -63,7 +63,7 @@
             }
 
 
-        .window {
+        .window, .terminal {
             position: absolute;
             top: 32px;
             left: 32px;
@@ -212,6 +212,14 @@
         text-align: center;
     }
 
+    .terminal {
+        overflow-x: hidden;
+        overflow-y: scroll;
+        color: #FFF !important;
+        background-color: #000 !important;
+        border-radius: 0px !important;
+    }
+
     .terminal_cell {
         position: absolute;
         width: auto;
@@ -230,3 +238,4 @@
             left: -100vw;
         }
         
+    

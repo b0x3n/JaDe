@@ -209,7 +209,7 @@
         let __windowHtml = `
             <${windowConfig['elementType']}
                 id="window_${this.processes}"
-                class="window"
+                class="${windowConfig['elementClass']}"
                 style="z-index: ${this.processes}; ${__canResize}"
             >
                 %toolbar%

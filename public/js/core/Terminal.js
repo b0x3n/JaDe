@@ -37,6 +37,7 @@
 
         let _inputBuffer = '';
         let _outputBuffer = '';
+        let _currentPath = '/';
 
         let _inputMask = false;
 
@@ -84,16 +85,19 @@
             _terminalSize = document.getElementById(`window_${_wInstance.id}_content`).getBoundingClientRect();
 
             _terminalRows = Math.floor(_terminalSize.height / _cellHeight);
-            _terminalCols = Math.floor(_terminalSize.width / _cellWidth);
+            _terminalCols = (Math.floor(_terminalSize.width / _cellWidth) - 2.6);
             _terminalPadTop = Math.floor((_terminalSize.height % _cellHeight) / 2);
             _terminalPadLeft = Math.floor((_terminalSize.width % _cellWidth) / 2);
 
-            $(`#${_terminalID}`).css({
+            _terminalPadTop = 0;
+            _terminalPadLeft = 0;
+
+            $(`#window_${_wInstance.id}_content`).html(__getTerminalHtml());
+
+            $(`#window_${_wInstance.id}_content`).css({
                 'color': _fontColor,
                 'background-color': _fontBackground
             });
-
-            $(`#window_${_wInstance.id}_content`).html(__getTerminalHtml());
         
         };
 
@@ -180,14 +184,54 @@
 
 
 ///////////////////////////////////////////////////////////
+//  __addRow()                                           //
+///////////////////////////////////////////////////////////
+//
+        const __addRow = () => {
+            let _rowHtml = ''
+
+            for (let col = 0; col < _terminalCols; col++) {
+                _rowHtml += `
+                    <div
+                        id="window_${_wInstance.id}_${_terminalRows}_${col}"
+                        class="terminal_cell"
+                        style="
+                            top: ${((_terminalRows * _cellHeight) + _terminalPadTop)}px;
+                            left: ${((col * _cellWidth) + _terminalPadLeft)}px;
+                            width: ${_cellWidth}px;
+                            height: ${_cellHeight}px;
+                        "
+                    >
+                        &nbsp;
+                    </div>
+                `;
+            }
+
+            _terminalRows++;
+            
+            $(`#window_${_wInstance.id}_content`).append(_rowHtml);
+
+            let _el = document.getElementById(`window_${_wInstance.id}_content`);
+            _el.scrollTop = _el.scrollHeight;
+
+        };
+
+
+///////////////////////////////////////////////////////////
 //  __nextLine()                                         //
 ///////////////////////////////////////////////////////////
 //
         const __nextLine = () => {
 
             __disableCursor();
+
             _cursorY++;
+
+            if (_cursorY >= _terminalRows)
+                __addRow();
+
             _cursorX = 0;
+            
             __enableCursor();
 
         };
@@ -197,9 +241,16 @@
 //  __putChar()                                          //
 ///////////////////////////////////////////////////////////
 //
-        const __putChar = char => {
+        const __putChar = outputChar => {
 
-            $(`#window_${_wInstance.id}_${_cursorY}_${_cursorX}`).html(char);
+            outputChar = (outputChar === ' ') ? '&nbsp;' : outputChar;
+            outputChar = (outputChar === '<') ? '&lt;' : outputChar;
+            outputChar = (outputChar === '>') ? '&gt;' : outputChar;
+            outputChar = (outputChar === '"') ? '&quot;' : outputChar;
+            outputChar = (outputChar === '\'') ? '&#39;' : outputChar;
+            outputChar = (outputChar === '&') ? '&amp;' : outputChar;
+
+            $(`#window_${_wInstance.id}_${_cursorY}_${_cursorX}`).html(outputChar);
 
             __disableCursor();
 
@@ -209,6 +260,29 @@
                 __nextLine();
 
             __enableCursor();
+
+        };
+
+
+///////////////////////////////////////////////////////////
+//  __putString()                                        //
+///////////////////////////////////////////////////////////
+//
+        const __putString = outputString => {
+
+            for (let charNo = 0; charNo < outputString.length; charNo++)
+                __putChar(outputString.substring(charNo, (charNo + 1)));
+
+        };
+
+    
+///////////////////////////////////////////////////////////
+//  __putPrompt()                                        //
+///////////////////////////////////////////////////////////
+//
+        const __putPrompt = () => {
+
+            __putString(`[user@${_currentPath}] $ `);
 
         };
 
@@ -224,11 +298,17 @@
                     const __response = await __executeCommand();
                     console.log(__response);
                     __nextLine();
+                    __putPrompt();
                 }
                 else if (ev.code === 'Backspace' || ev.code === 'NumpadDecimal')
                     console.log(`Delete key`);
             }
             else {
+                if (_inputBuffer === 'exit') {
+                    $(`#window_${_wInstance.id}_close`).trigger('click');
+                    return;
+                }
+
                 const __key = String.fromCharCode(ev.keyCode);
                 _inputBuffer += __key;
                 _outputBuffer += __key;
@@ -272,13 +352,17 @@
             __enableCursor();
             //__enableKeyboardEvents();
 
+            setTimeout(() => {
+                __putPrompt();
             $(`#window_${wInstance.id}`).on('keypress', (ev) => {
                 __handleKeypress(ev, 'keypress');
             });
             $(`#window_${wInstance.id}`).on('keydown', (ev) => {
                 __handleKeypress(ev,'keydown');
             });
-            
+        }, 100);
+            //$(`#window_${wInstance.id}_content`).addClass('terminal');
+
         };
 
 //  We need to request a new window from the window
