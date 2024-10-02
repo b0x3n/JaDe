@@ -98,6 +98,13 @@
                 'color': _fontColor,
                 'background-color': _fontBackground
             });
+
+            _cursorY = _cursorX = 0;
+            if (_outputBuffer !== '') {
+                const __buffer = _outputBuffer;
+                _outputBuffer = '';
+                __putString(__buffer);
+            }
         
         };
 
@@ -243,12 +250,17 @@
 //
         const __putChar = outputChar => {
 
+            _outputBuffer += outputChar;
+            if (outputChar === '\n')
+                return __nextLine();
+
             outputChar = (outputChar === ' ') ? '&nbsp;' : outputChar;
             outputChar = (outputChar === '<') ? '&lt;' : outputChar;
             outputChar = (outputChar === '>') ? '&gt;' : outputChar;
             outputChar = (outputChar === '"') ? '&quot;' : outputChar;
             outputChar = (outputChar === '\'') ? '&#39;' : outputChar;
             outputChar = (outputChar === '&') ? '&amp;' : outputChar;
+
 
             $(`#window_${_wInstance.id}_${_cursorY}_${_cursorX}`).html(outputChar);
 
@@ -296,8 +308,12 @@
             if (keytype === 'keydown') {
                 if (ev.code === 'Enter') {
                     const __response = await __executeCommand();
+                    _outputBuffer += '\n';
                     console.log(__response);
                     __nextLine();
+                    __putString(__response.output);
+                    __nextLine();
+                    _outputBuffer += '\n';
                     __putPrompt();
                 }
                 else if (ev.code === 'Backspace' || ev.code === 'NumpadDecimal')
@@ -311,7 +327,6 @@
 
                 const __key = String.fromCharCode(ev.keyCode);
                 _inputBuffer += __key;
-                _outputBuffer += __key;
                 __putChar(__key);
             }
 
@@ -350,18 +365,16 @@
             
             __createTerminalDisplay();
             __enableCursor();
-            //__enableKeyboardEvents();
 
             setTimeout(() => {
                 __putPrompt();
-            $(`#window_${wInstance.id}`).on('keypress', (ev) => {
-                __handleKeypress(ev, 'keypress');
-            });
-            $(`#window_${wInstance.id}`).on('keydown', (ev) => {
-                __handleKeypress(ev,'keydown');
-            });
-        }, 100);
-            //$(`#window_${wInstance.id}_content`).addClass('terminal');
+                $(`#window_${wInstance.id}`).on('keypress', (ev) => {
+                    __handleKeypress(ev, 'keypress');
+                });
+                $(`#window_${wInstance.id}`).on('keydown', (ev) => {
+                    __handleKeypress(ev,'keydown');
+                });
+            }, 100);
 
         };
 
