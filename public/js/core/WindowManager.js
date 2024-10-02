@@ -329,6 +329,10 @@
                 __self.restoreWindow(__id);
         });
 
+        if (windowConfig.hasOwnProperty('keypress'))
+            this.windows[`window_${this.processes}`]['keypress'] = windowConfig['keypress'];
+
+
 ///////////////////////////////////////////////////////////
 //  All windowed apps should have an onload event in
 //  the config, this is called to pass the window ID to
@@ -363,6 +367,22 @@
         this.minimiseWindow = MinimiseWindow.bind(this);
         this.maximiseWindow = MaximiseWindow.bind(this);
         this.restoreWindow = RestoreWindow.bind(this);
+
+        let __self = this;
+
+        $(window).on('keypress', (ev) => {
+            Object.keys(this.windows).forEach(win => {
+                win = win.replace('window_', '');
+                console.log(`|${win}|`);
+                // if (__self.windows[`window_${win}`].hasOwnProperty('keypress')) {
+                //     console.log('hyor')
+                    __self.windows[`window_${win}`]['keypress'](win, ev);
+                // }
+            });
+            // if (__self.windows[`window_${this.__hasFocus}`].hasOwnProperty('keypress')) {
+            //     __self.windows[`window_${this.__hasFocus}`]['keypress'](this.__hasFocus, ev);
+            // }
+        });
 
     };
 

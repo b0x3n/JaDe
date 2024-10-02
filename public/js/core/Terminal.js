@@ -35,6 +35,8 @@
         let _cursorY = 0;
         let _cursorX = 0;
 
+        let _inputBuffer = '';
+
 
 ///////////////////////////////////////////////////////////
 //  __getTerminalHtml()                                  //
@@ -136,6 +138,24 @@
 
 
 ///////////////////////////////////////////////////////////
+//  __enableKeyboardEvents()                             //
+///////////////////////////////////////////////////////////
+//
+        const __enableKeyboardEvents = () => {
+
+            $(`*`).on('keypress', function(ev) {
+
+                const _key = ev.code;
+
+                if ($(this).hasFocus())
+                    console.log(`Keypress ${_key}`);
+
+            });
+
+        };
+
+
+///////////////////////////////////////////////////////////
 //  __initialise()                                       //
 ///////////////////////////////////////////////////////////
 //
@@ -167,6 +187,7 @@
             
             __createTerminalDisplay();
             __enableCursor();
+            //__enableKeyboardEvents();
             
         };
 
@@ -204,6 +225,9 @@
                     __createTerminalDisplay();
                     __terminalTimeoutID = false;
                 }, 50)
+            },
+            'keypress': (id, ev) => {
+                console.log(`Terminal ${id} got key ${ev.code}`);
             }
         });
 

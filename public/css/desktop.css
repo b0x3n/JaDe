@@ -72,7 +72,7 @@
             font-family: "Rethink Sans", sans-serif;
             border-radius: 6px;
             border: solid 1px #555;
-            background-color: #CBB;
+            background-image: linear-gradient(to bottom, #2244AA, #99CCFF, transparent);
             color: #224;
             overflow: hidden;
             box-shadow: -4px 4px 4px #555;

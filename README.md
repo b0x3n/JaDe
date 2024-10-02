@@ -22,7 +22,18 @@ that will allow you to manage a filesystem via the server.
 Also added __clickable icons__ to the desktop - you gotta double-click
 them, added one of the file manager.
 
-More still to do!
+
+## More updates
+
+Alright-oh! Currently working on the terminal, I want to get a bunch of server commands implemented (save & edit files/directories, etc) then I can build front-end applications to make use of those commands (text editors, etc).
+
+Hopefully terminal will be working by the end of the session - honestly, there ain't enough hours in an earthly day, we should petition the gods for a 36 hour day!
+
+Who's with me? Hmmm?
+
+Hmmmmm?
+
+...hmmmm!
 
 
 ## Prerequisites
