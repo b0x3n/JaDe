@@ -20,6 +20,9 @@
 //
         const _list = filePath => {
 
+            if (filePath.substring(0, 1) === '/')
+                filePath = filePath.substring(1);
+            
             if (filePath === '/')
                 filePath = __root;
             else
@@ -32,9 +35,9 @@
 //  then the contents of the directory are returned.
 //
             if(! fs.existsSync(filePath)) {
-                return JSON.stringify({
-                    'error': `${filePath}: No such file or directory`
-                });
+                return {
+                    'output': `${filePath}: No such file or directory`
+                };
             }
 
             if (fs.lstatSync(filePath).isFile()) {

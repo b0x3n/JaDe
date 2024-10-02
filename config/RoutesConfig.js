@@ -12,8 +12,28 @@
     import { DefaultTheme } from './../defaults/DefaultTheme.js';
 
     import { DB } from './../src/DB.js';
-    
     const __db = DB();
+
+    import { Tokeniser } from './../src/Tokeniser.js';
+    const __tokeniser = Tokeniser();
+
+
+    import { lsCommand } from "./../system/bin/lsCommand.js";
+
+
+    const __systemCommands = {
+        'ls': lsCommand
+    };
+
+    
+    function __dispatchCommand(path, tokens) {
+
+        if (__systemCommands.hasOwnProperty(tokens[2]))
+            return __systemCommands[tokens[2]](path, tokens);
+
+        return JSON.stringify({'output': `'${tokens[2]}' is not a recognised command`});
+
+    };
 
 
     export const RoutesConfig = {
@@ -83,8 +103,9 @@
 ///////////////////////////////////////////////////////////
 //  Remote command execution.
 //
-            '/exec_command/:command_string': (req, res) => {
-                const __commandString = req.params.command_string;
+            '/exec_command/:path/:command_string': async (req, res) => {
+                let __path = decodeURIComponent(req.params.path).toString();
+                let __commandString = decodeURIComponent(req.params.command_string).toString();
 
                 const _objResponse = {
                     'output': 'Your output, m\'sieur!'
@@ -92,7 +113,23 @@
 
                 console.log(`Received command: ${__commandString}`);
 
-                return res.send(JSON.stringify(_objResponse));
+//  The command needs to be tokenised.
+//
+                const __tokens = __tokeniser.parse_lines('stdin', __commandString);
+
+                if (__tokens[0][2].trim() === 'exit' || __tokens[0][2].trim() === 'clear')
+                    return;
+
+                if (typeof __tokens === 'string')
+                    return res.send(JSON.stringify(__tokens));
+                else 
+//  Now we pass the tokenised string to the command
+//  dispatcher - it'll execute the appropriate command
+//  and return the output.
+//
+                    return res.send(__dispatchCommand(__path, __tokens[0]));
+
+                //return res.send(JSON.stringify(_objResponse));
             }
 
         },

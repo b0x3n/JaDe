@@ -40,6 +40,7 @@
         let _currentPath = '/';
 
         let _inputMask = false;
+        let _isReset = false;
 
 
 ///////////////////////////////////////////////////////////
@@ -179,7 +180,9 @@
 //  and await the response.
 //
                 $.ajaxSetup({'dataType': 'json'});
-                const __commandOutput = await $.ajax(`/exec_command/${_inputBuffer}`);
+                
+                if (_currentPath === '' || _currentPath === '/') _currentPath = 'root';
+                const __commandOutput = await $.ajax(`/exec_command/${encodeURIComponent(_currentPath)}/${encodeURIComponent(_inputBuffer)}`);
                 _inputBuffer = '';
 
                 return __commandOutput;
@@ -251,6 +254,7 @@
         const __putChar = outputChar => {
 
             _outputBuffer += outputChar;
+            
             if (outputChar === '\n')
                 return __nextLine();
 
@@ -294,7 +298,31 @@
 //
         const __putPrompt = () => {
 
+            if (_currentPath === 'root')
+                _currentPath = '/';
             __putString(`[user@${_currentPath}] $ `);
+
+        };
+
+
+///////////////////////////////////////////////////////////
+//  __getDirlistOutput()                                 //
+///////////////////////////////////////////////////////////
+//
+        const __getDirlistOutput = objDirlist => {
+
+            let _strDirlist = '';
+
+            JSON.parse(objDirlist).forEach(objDir => {
+                const __json = JSON.parse(objDir);
+
+                if (_strDirlist !== '')
+                    _strDirlist += '\n';
+
+                _strDirlist += `${__json['filePath']}`;
+            });
+
+            return _strDirlist;
 
         };
 
@@ -305,13 +333,33 @@
 //
         const __handleKeypress = async (ev, keytype) => {
 
+            let __output = '';
+
+
             if (keytype === 'keydown') {
                 if (ev.code === 'Enter') {
-                    const __response = await __executeCommand();
+                    console.log(`ENTER`)
+                    if (_inputBuffer.trim() === 'clear') {
+                        _inputBuffer = _outputBuffer = '';
+                        _isReset = true;
+                        __createTerminalDisplay();
+                        _cursorY = _cursorX = 0;
+                        __putPrompt();
+                        return;
+                    }
+                    if (_inputBuffer.trim() === 'exit') {
+                        $(`#window_${_wInstance.id}_close`).trigger('click');
+                        return;
+                    }
+    
+                    let __response = await __executeCommand();
                     _outputBuffer += '\n';
-                    console.log(__response);
                     __nextLine();
-                    __putString(__response.output);
+                    if (! __response.hasOwnProperty('output'))
+                        __output = __getDirlistOutput(__response);
+                    else
+                        __output = __response.output;
+                    __putString(__output);
                     __nextLine();
                     _outputBuffer += '\n';
                     __putPrompt();
@@ -320,12 +368,10 @@
                     console.log(`Delete key`);
             }
             else {
-                if (_inputBuffer === 'exit') {
-                    $(`#window_${_wInstance.id}_close`).trigger('click');
-                    return;
-                }
-
                 const __key = String.fromCharCode(ev.keyCode);
+                if (__key === '/') {
+                    ev.preventDefault();
+                }
                 _inputBuffer += __key;
                 __putChar(__key);
             }
@@ -368,6 +414,11 @@
 
             setTimeout(() => {
                 __putPrompt();
+                if (_isReset) {
+                    _isReset = false;
+                    return;
+                }
+                _currentPath = 'root';
                 $(`#window_${wInstance.id}`).on('keypress', (ev) => {
                     __handleKeypress(ev, 'keypress');
                 });
